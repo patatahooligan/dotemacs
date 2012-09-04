@@ -2,11 +2,12 @@
 
 ;; EL-GET
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(add-to-list 'exec-path "~/bin/")
 
 
-(if (file-readable-p "passwords.el")
-    (load-file "personal.el")
-  (load-file "dummy-personal.el"))
+(if (file-readable-p "~/.emacs.d/personal.el")
+    (load-file       "~/.emacs.d/personal.el")
+  (load-file   "~/.emacs.d/dummy-personal.el"))
 
 
 (unless (require 'el-get nil t)
@@ -18,11 +19,14 @@
        (eval-print-last-sexp)))))
 
 (setq my:el-get-packages
-      '(bm
-	goto-last-change
-	xml-rpc lisppaste
-	undo-tree
+      '(
+	;; Python
+	ipython
 	python-mode
+	python-pep8
+	pylookup
+
+	;; Auto Complete packages
 	auto-complete
 	auto-complete+
 	auto-complete-etags
@@ -31,10 +35,6 @@
 	auto-complete-extension
 	ac-dabbrev
 	ac-python
-	zencoding-mode
-	python-pep8
-	git-emacs
-	visual-basic-mode
 
 	;; themes
 	tomorrow-night-paradise-theme
@@ -43,21 +43,28 @@
 	monokai-theme
 	zenburn-theme
 
+	;; Misc
+	etags-table
+	zencoding-mode
+	git-emacs
+	visual-basic-mode
 	yasnippet
 	ido-ubiquitous
-	smex))
+	smex
+	bm
+	goto-last-change
+	xml-rpc lisppaste
+	undo-tree))
 
 (setq
  el-get-sources
  '(el-get
    auto-complete
    zencoding-mode
-   python-mode
    python-pep8
    git-emacs
    visual-basic-mode
    yasnippet
-   monokai-theme
    (:name bm
 	  :description "Simple bookmark manager"
 	  :type github
@@ -214,8 +221,14 @@
       org-support-shift-select 'always)
 
 ;; Python
+(setq py-mode-map python-mode-map)
+(setq ipython-command "/usr/bin/ipython2")
+(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
 (require 'python-mode)
+(require 'ipython)
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(define-key python-mode-map "\C-ch" 'pylookup-lookup)
+
 
 ;; desktop
 (require 'desktop)
@@ -266,7 +279,7 @@
 ;; name can be be a bit different, which would screw up autoconnect
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
-      '((".*\\.freenode.net" "#emacs"))
+      '((".*\\.freenode.net" "#emacs")))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
@@ -300,3 +313,8 @@
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
 (global-set-key (kbd "<f2>")   'bm-next)
 (global-set-key (kbd "<S-f2>") 'bm-previous)
+
+;; ETAGS
+(require 'etags-table)
+(setq etags-table-search-up-depth 10)
+(add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
