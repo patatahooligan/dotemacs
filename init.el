@@ -3,6 +3,12 @@
 ;; EL-GET
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
+
+(if (file-readable-p "passwords.el")
+    (load-file "personal.el")
+  (load-file "dummy-personal.el"))
+
+
 (unless (require 'el-get nil t)
   (url-retrieve
    "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
@@ -203,7 +209,7 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
-(setq org-agenda-files '()
+(setq org-agenda-files my-orgmode-agenda-files
       org-hierarchical-todo-statistics nil
       org-support-shift-select 'always)
 
@@ -261,10 +267,6 @@
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
       '((".*\\.freenode.net" "#emacs"))
-
-(if (file-readable-p "passwords.el")
-    (load-file "passwords.el")
-  (load-file "dummy-passwords.el"))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
