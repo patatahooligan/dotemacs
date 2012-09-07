@@ -44,6 +44,8 @@
 	zenburn-theme
 
 	;; Misc
+	markdown-mode
+	expand-region
 	highlight-parentheses
 	etags-table
 	zencoding-mode
@@ -320,3 +322,8 @@
 (require 'etags-table)
 (setq etags-table-search-up-depth 10)
 (add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
+
+;; Expand region
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-+") 'er/contract-region)
