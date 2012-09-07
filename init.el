@@ -7,9 +7,9 @@
 
 ;; Ensure that personal.el exists
 (cond ((not (file-readable-p "~/.emacs.d/personal.el"))
-      (progn
-      (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el")
-      (message "Copied dummy personal preferences to personal.el"))))
+       (progn
+	 (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el")
+	 (message "Copied dummy personal preferences to personal.el"))))
 
 (load-file   "~/.emacs.d/personal.el")
 
@@ -31,14 +31,8 @@
 	pylookup
 
 	;; Auto Complete packages
+	yasnippet
 	auto-complete
-	auto-complete+
-	auto-complete-etags
-	auto-complete-yasnippet
-	auto-complete-emacs-lisp
-	auto-complete-extension
-	ac-dabbrev
-	ac-python
 
 	;; themes
 	tomorrow-night-paradise-theme
@@ -55,7 +49,6 @@
 	zencoding-mode
 	git-emacs
 	visual-basic-mode
-	yasnippet
 	ido-ubiquitous
 	smex
 	bm
@@ -71,7 +64,14 @@
    python-pep8
    git-emacs
    visual-basic-mode
-   yasnippet
+
+   (:name yasnippet
+	  :website "https://github.com/capitaomorte/yasnippet.git"
+	  :description "YASnippet is a template system for Emacs."
+	  :type github
+	  :pkgname "capitaomorte/yasnippet"
+	  :features "yasnippet"
+	  :compile "yasnippet.el")
 
    (:name bm
 	  :description "Simple bookmark manager"
@@ -103,7 +103,6 @@
 	do (add-to-list 'el-get-sources p)))
 
 (el-get 'sync my:el-get-packages)
-
 
 ;; on to the visual settings
 (load-theme 'tomorrow-night-paradise t)
@@ -198,15 +197,13 @@
 (require 'yasnippet)
 (setq yas-snippet-dirs "~/.emacs.d/el-get/yasnippet/snippets/")
 (yas--initialize)
+(yas/load-directory yas-snippet-dirs)
+
+
 
 ;; Auto Complete
-(require 'auto-complete+)
-(require 'auto-complete-extension)
-(require 'auto-complete-yasnippet)
-(require 'auto-complete-etags)
+(require 'auto-complete)
 (require 'auto-complete-config)
-(require 'ac-python)
-(require 'auto-complete-emacs-lisp)
 (ac-config-default)
 
 ;; ORG mode
@@ -330,8 +327,3 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C-+") 'er/contract-region)
-
-
-;; eshell on startup
-(add-hook 'emacs-startup-hook 'eshell)
-(setq inhibit-splash-screen t)	; no splash screen, thanks
