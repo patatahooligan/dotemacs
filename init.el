@@ -50,6 +50,7 @@
 	visual-basic-mode
 	yasnippet
 	ido-ubiquitous
+	ido-hacks
 	smex
 	bm
 	goto-last-change
@@ -65,6 +66,11 @@
    git-emacs
    visual-basic-mode
    yasnippet
+
+   (:name ido-hacks
+	  :description "Ido hacks"
+	  :type github
+	  :pkgname "scottjad/ido-hacks")
    (:name bm
 	  :description "Simple bookmark manager"
 	  :type github
@@ -140,7 +146,8 @@
 
 ;; Ido mode
 (require 'ido)
-(ido-mode nil)
+(ido-mode t)
+(require 'ido-hacks)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
