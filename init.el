@@ -5,9 +5,13 @@
 (add-to-list 'exec-path "~/bin/")
 
 
-(if (file-readable-p "~/.emacs.d/personal.el")
-    (load-file       "~/.emacs.d/personal.el")
-  (load-file   "~/.emacs.d/dummy-personal.el"))
+;; Ensure that personal.el exists
+(cond ((not (file-readable-p "~/.emacs.d/personal.el"))
+      (progn
+      (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el")
+      (message "Copied dummy personal preferences to personal.el"))))
+
+(load-file   "~/.emacs.d/personal.el")
 
 
 (unless (require 'el-get nil t)
@@ -103,7 +107,6 @@
 
 ;; on to the visual settings
 (load-theme 'tomorrow-night-paradise t)
-(setq inhibit-splash-screen t)	; no splash screen, thanks
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
 
@@ -327,3 +330,8 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C-+") 'er/contract-region)
+
+
+;; eshell on startup
+(add-hook 'emacs-startup-hook 'eshell)
+(setq inhibit-splash-screen t)	; no splash screen, thanks
