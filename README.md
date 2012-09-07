@@ -70,3 +70,5 @@ Here are some stuff I would like to put in here at some point
 * Better paren highlighting
 
 * python community mode(el-get managed)
+
+* Auctex
