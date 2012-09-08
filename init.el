@@ -5,9 +5,9 @@
 (add-to-list 'exec-path "~/bin/")
 
 
-(if (file-readable-p "~/.emacs.d/personal.el")
-    (load-file       "~/.emacs.d/personal.el")
-  (load-file   "~/.emacs.d/dummy-personal.el"))
+(cond ((not (file-readable-p "~/.emacs.d/personal.el"))
+    (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el"))
+(load-file   "~/.emacs.d/personal.el")
 
 
 (unless (require 'el-get nil t)
@@ -28,13 +28,6 @@
 
 	;; Auto Complete packages
 	auto-complete
-	auto-complete+
-	auto-complete-etags
-	auto-complete-yasnippet
-	auto-complete-emacs-lisp
-	auto-complete-extension
-	ac-dabbrev
-	ac-python
 
 	;; themes
 	tomorrow-night-paradise-theme
@@ -43,14 +36,19 @@
 	monokai-theme
 	zenburn-theme
 
+	;; ido
+	ido-mode-el
+	ido-speed-hack
+	ido-better-flex
+
 	;; Misc
+	markdown-mode
 	etags-table
 	zencoding-mode
 	git-emacs
 	visual-basic-mode
 	yasnippet
 	ido-ubiquitous
-	ido-hacks
 	smex
 	bm
 	goto-last-change
@@ -60,17 +58,37 @@
 (setq
  el-get-sources
  '(el-get
-   auto-complete
    zencoding-mode
    python-pep8
    git-emacs
    visual-basic-mode
-   yasnippet
 
-   (:name ido-hacks
-	  :description "Ido hacks"
+   (:name ido-better-flex
+	  :description "Better flex matching for ido"
 	  :type github
-	  :pkgname "scottjad/ido-hacks")
+	  :pkgname "orfelyus/ido-better-flex"
+	  :compile "ido-better-flex.el")
+
+   (:name ido-mode-el
+	  :description "Better flex matching for ido"
+	  :type github
+	  :pkgname "orfelyus/ido-mode-el"
+	  :compile "ido.el")
+
+   (:name ido-speed-hack
+	  :description "Better flex matching for ido"
+	  :type github
+	  :pkgname "orfelyus/ido-speed-hack"
+	  :compile "ido-speed-hack.el")
+
+   (:name yasnippet
+              :website "https://github.com/capitaomorte/yasnippet.git"
+              :description "YASnippet is a template system for Emacs."
+              :type github
+              :pkgname "capitaomorte/yasnippet"
+              :features "yasnippet"
+              :compile "yasnippet.el")
+
    (:name bm
 	  :description "Simple bookmark manager"
 	  :type github
@@ -146,13 +164,20 @@
 
 ;; Ido mode
 (require 'ido)
-(ido-mode t)
-(require 'ido-hacks)
+(require 'ido-speed-hack)
+(require 'ido-better-flex)
+(require 'ido-ubiquitous)
+(ido-mode nil)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
 (ido-everywhere t)
-(require 'ido-ubiquitous)
+;; This is mainly for just swapped letters. It sometimes doesnt catch
+;; entire words
+(ido-better-flex/enable)
+ ;; (setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".txt" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
+
+
 
 ;; Basic stuff
 (require 'uniquify)
@@ -200,13 +225,14 @@
 (yas--initialize)
 
 ;; Auto Complete
-(require 'auto-complete+)
-(require 'auto-complete-extension)
-(require 'auto-complete-yasnippet)
-(require 'auto-complete-etags)
+(require 'auto-complete)
 (require 'auto-complete-config)
-(require 'ac-python)
-(require 'auto-complete-emacs-lisp)
+;; (require 'auto-complete+)
+;; (require 'auto-complete-extension)
+;; (require 'auto-complete-yasnippet)
+;; (require 'auto-complete-etags)
+;; (require 'ac-python)
+;; (require 'auto-complete-emacs-lisp)
 (ac-config-default)
 
 ;; ORG mode
