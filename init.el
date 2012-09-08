@@ -5,8 +5,12 @@
 (add-to-list 'exec-path "~/bin/")
 
 
+;; Ensure that personal.el exists
 (cond ((not (file-readable-p "~/.emacs.d/personal.el"))
-    (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el"))
+       (progn
+	 (copy-file "~/.emacs.d/dummy-personal.el" "~/.emacs.d/personal.el")
+	 (message "Copied dummy personal preferences to personal.el"))))
+
 (load-file   "~/.emacs.d/personal.el")
 
 
@@ -27,6 +31,7 @@
 	pylookup
 
 	;; Auto Complete packages
+	yasnippet
 	auto-complete
 
 	;; themes
@@ -43,11 +48,12 @@
 
 	;; Misc
 	markdown-mode
+	expand-region
+	highlight-parentheses
 	etags-table
 	zencoding-mode
 	git-emacs
 	visual-basic-mode
-	yasnippet
 	ido-ubiquitous
 	smex
 	bm
@@ -82,12 +88,20 @@
 	  :compile "ido-speed-hack.el")
 
    (:name yasnippet
-              :website "https://github.com/capitaomorte/yasnippet.git"
-              :description "YASnippet is a template system for Emacs."
-              :type github
-              :pkgname "capitaomorte/yasnippet"
-              :features "yasnippet"
-              :compile "yasnippet.el")
+	  :website "https://github.com/capitaomorte/yasnippet.git"
+	  :description "YASnippet is a template system for Emacs."
+	  :type github
+	  :pkgname "capitaomorte/yasnippet"
+	  :features "yasnippet"
+	  :compile "yasnippet.el")
+
+   (:name yasnippet
+	  :website "https://github.com/capitaomorte/yasnippet.git"
+	  :description "YASnippet is a template system for Emacs."
+	  :type github
+	  :pkgname "capitaomorte/yasnippet"
+	  :features "yasnippet"
+	  :compile "yasnippet.el")
 
    (:name bm
 	  :description "Simple bookmark manager"
@@ -120,10 +134,8 @@
 
 (el-get 'sync my:el-get-packages)
 
-
 ;; on to the visual settings
 (load-theme 'tomorrow-night-paradise t)
-(setq inhibit-splash-screen t)	; no splash screen, thanks
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
 
@@ -223,6 +235,9 @@
 (require 'yasnippet)
 (setq yas-snippet-dirs "~/.emacs.d/el-get/yasnippet/snippets/")
 (yas--initialize)
+(yas/load-directory yas-snippet-dirs)
+
+
 
 ;; Auto Complete
 (require 'auto-complete)
@@ -351,3 +366,8 @@
 (require 'etags-table)
 (setq etags-table-search-up-depth 10)
 (add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
+
+;; Expand region
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C-+") 'er/contract-region)
