@@ -70,6 +70,13 @@
    git-emacs
    visual-basic-mode
 
+   ;; This is temporary until the pull request is dealt with in upstream
+   (:name find-file-in-project
+	  :description "Find a file in the current project"
+	  :type github
+	  :pkgname "fakedrake/find-file-in-project"
+	  :compile "find-file-in-project.el")
+
    (:name ido-better-flex
 	  :description "Better flex matching for ido"
 	  :type github
