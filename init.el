@@ -45,6 +45,8 @@
 	ido-mode-el
 	ido-speed-hack
 	ido-better-flex
+	ido-ubiquitous
+	smex
 
 	;; Misc
 	markdown-mode
@@ -54,10 +56,9 @@
 	zencoding-mode
 	git-emacs
 	visual-basic-mode
-	ido-ubiquitous
-	smex
 	bm
 	goto-last-change
+	find-file-in-project
 	xml-rpc lisppaste
 	undo-tree))
 
@@ -371,3 +372,11 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C-+") 'er/contract-region)
+
+
+;; Find file in project
+(require 'find-file-in-project)
+(global-set-key (kbd "C-x f") 'find-file-in-project)
+(setq ffip-full-paths t)
+
+(put 'narrow-to-region 'disabled nil)
