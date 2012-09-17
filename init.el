@@ -67,6 +67,7 @@
  '(el-get
    zencoding-mode
    python-pep8
+   python-mode
    git-emacs
    visual-basic-mode
 
@@ -146,7 +147,7 @@
 (load-theme 'tomorrow-night-paradise t)
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
-
+(mouse-avoidance-mode 'banish)
 (tool-bar-mode -1)	; no tool bar with icons
 (scroll-bar-mode -1)	; no scroll bars
 
@@ -256,6 +257,8 @@
 ;; (require 'auto-complete-etags)
 ;; (require 'ac-python)
 ;; (require 'auto-complete-emacs-lisp)
+(set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
+(setq ac-use-fuzzy t)
 (ac-config-default)
 
 ;; ORG mode
