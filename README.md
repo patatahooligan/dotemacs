@@ -8,6 +8,8 @@ This is just my dot emacs. You are free to use it. It is based on el-get. I know
 * `C-+`: contract region
 * `C-c e s`: start or bring forth ERC
 * `C-c e k`: kill all ERC buffers
+* `M-+`: larger fonts
+* `M--`: smaller fonts
 
 ## What you need to change ##
 
@@ -59,15 +61,11 @@ In a nutshell the features this dotemacs brings to the table:
 
 Here are some stuff I would like to put in here at some point
 
-* ido-hacks for faster ido
-
-* auto-complete with dictionaries, filenames
+* auto-complete with dictionaries
 
 * Python documentation
 
 * Better yasnippet configuration
-
-* Better paren highlighting
 
 * python community mode(el-get managed)
 

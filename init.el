@@ -34,12 +34,10 @@
 	yasnippet
 	auto-complete
 
-	;; themes
+	;; themes I like
 	tomorrow-night-paradise-theme
-	tomorrow-theme
 	naquadah-theme
-	monokai-theme
-	zenburn-theme
+	obsidian-theme
 
 	;; ido
 	ido-mode-el
@@ -51,7 +49,6 @@
 	;; Misc
 	markdown-mode
 	expand-region
-	highlight-parentheses
 	etags-table
 	zencoding-mode
 	git-emacs
@@ -70,6 +67,11 @@
    python-mode
    git-emacs
    visual-basic-mode
+
+   (:name obsidian-theme
+	  :description "My theme"
+	  :type github
+	  :pkgname "fakedrake/obsidian-theme")
 
    ;; This is temporary until the pull request is dealt with in upstream
    (:name find-file-in-project
@@ -144,7 +146,20 @@
 (el-get 'sync my:el-get-packages)
 
 ;; on to the visual settings
-(load-theme 'tomorrow-night-paradise t)
+(require 'naquadah-theme)
+(load-theme 'naquadah t)
+(let ((comment "IndianRed2"))
+  (custom-theme-set-faces
+   'naquadah
+   `(mode-line ((t (:height 1.1 :background "gray30"))))
+   `(minibuffer-prompt ((t (:foreground "orange1"))))
+
+   ;; Development
+   `(font-lock-comment-face ((t (:foreground ,comment))))
+   `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
+   `(font-lock-doc-face ((t (:foreground ,comment))))
+   `(font-lock-doc-string-face ((t (:foreground ,comment))))))
+
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
 (mouse-avoidance-mode 'banish)
@@ -154,12 +169,8 @@
 (global-linum-mode 1)	; add line numbers on the left
 
 ;; CLIPBOARD
-(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-(setq x-select-enable-clipboard t)
-
-;; (global-set-key "\C-w" 'clipboard-kill-region)
-;; (global-set-key "\M-w" 'clipboard-kill-ring-save)
-;; (global-set-key "\C-y" 'clipboard-yank)
+(setq interprogram-paste-function 'x-cut-buffer-or-selection-value
+      x-select-enable-primary t)
 
 ;; full screen
 (defun fullscreen ()
@@ -173,9 +184,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("22ee8a5d6de86d5181f40e411c354ddde1f84ff246ad8a3cc8fa050282738d80" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "a2187840d0077aad2a626aea943edcf1c8733b0d68c77e4ad7130cb425a25af9" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "4aafea32abe07a9658d20aadcae066e9c7a53f8e3dfbd18d8fa0b26c24f9082c" "8281168b824a806489ca7d22e60bb15020bf6eecd64c25088c85b3fd806fc341" "d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-safe-themes (quote ("53eaee0aec77bc6c21c55cff042ac486adfe395c99e3dc0a59134d1dc09228ee" "22ee8a5d6de86d5181f40e411c354ddde1f84ff246ad8a3cc8fa050282738d80" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "a2187840d0077aad2a626aea943edcf1c8733b0d68c77e4ad7130cb425a25af9" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "4aafea32abe07a9658d20aadcae066e9c7a53f8e3dfbd18d8fa0b26c24f9082c" "8281168b824a806489ca7d22e60bb15020bf6eecd64c25088c85b3fd806fc341" "d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(ido-ubiquitous-mode t)
- '(safe-local-variable-values (quote ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t)))))
+ '(safe-local-variable-values (quote ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t))))
+ '(uniquify-after-kill-buffer-p t)
+ '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -196,24 +209,24 @@
 ;; This is mainly for just swapped letters. It sometimes doesnt catch
 ;; entire words
 (ido-better-flex/enable)
- ;; (setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".txt" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
+;; (setq ido-file-extensions-order '(".c" ".cpp" ".h" ".py" ".txt" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
 
 
 
 ;; Basic stuff
 (require 'uniquify)
-(custom-set-variables
- '(uniquify-after-kill-buffer-p t)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
+
 (setq-default
  frame-title-format
  (list '((buffer-file-name " %f" (dired-directory
                                   dired-directory
                                   (revert-buffer-function " %b"
                                                           ("%b - Dir:  " default-directory)))))))
-(server-start)
+(if (server-running-p)
+    (message "Skipping server creation, one already exists")
+  (server-start))
 (delete-selection-mode t)
-(show-paren-mode)
+(show-paren-mode t)
 (electric-pair-mode t)
 (global-hl-line-mode t)
 (set-face-attribute 'default nil :height 90)
@@ -224,9 +237,7 @@
 (toggle-input-method)
 (setq scroll-step 1)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(highlight-parentheses-mode)
 (global-set-key "\C-Z" 'revert-buffer)
-
 
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
@@ -258,6 +269,8 @@
 ;; (require 'ac-python)
 ;; (require 'auto-complete-emacs-lisp)
 (set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
+(add-to-list 'ac-dictionary-directories (expand-file-name "dictionaries"))
+(add-to-list 'ac-modes '(org-mode))
 (setq ac-use-fuzzy t)
 (ac-config-default)
 
@@ -391,3 +404,13 @@
 (setq ffip-full-paths t)
 
 (put 'narrow-to-region 'disabled nil)
+
+
+(defun djcb-zoom (n)
+  "with positive N, increase the font size, otherwise decrease it"
+  (set-face-attribute 'default (selected-frame) :height
+		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 10)))
+  (message (format "Font size: %d" (face-attribute 'default :height))))
+
+(global-set-key (kbd "M-+")      '(lambda nil (interactive) (djcb-zoom 1)))
+(global-set-key (kbd "M--")      '(lambda nil (interactive) (djcb-zoom -1)))
