@@ -153,19 +153,24 @@
    'naquadah
    `(mode-line ((t (:height 1.1 :background "gray30"))))
    `(minibuffer-prompt ((t (:foreground "orange1"))))
+   `(region ((t (:background "gray25"))))
 
    ;; Development
    `(font-lock-comment-face ((t (:foreground ,comment))))
    `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
    `(font-lock-doc-face ((t (:foreground ,comment))))
-   `(font-lock-doc-string-face ((t (:foreground ,comment))))))
+   `(font-lock-doc-string-face ((t (:foreground ,comment))))
+   `(link ((t (:foreground  "#729fcf" :underline t))))
+
+   ;; ERC
+   `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10"))))))
 
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
 (mouse-avoidance-mode 'banish)
 (tool-bar-mode -1)	; no tool bar with icons
 (scroll-bar-mode -1)	; no scroll bars
-(setq-default show-trailing-whitespace t)
+(add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
 (global-linum-mode 1)	; add line numbers on the left
 
 ;; CLIPBOARD
@@ -222,6 +227,8 @@
                                   dired-directory
                                   (revert-buffer-function " %b"
                                                           ("%b - Dir:  " default-directory)))))))
+
+(require 'server)
 (if (server-running-p)
     (message "Skipping server creation, one already exists")
   (server-start))
@@ -236,7 +243,6 @@
 (set-input-method 'greek)
 (toggle-input-method)
 (setq scroll-step 1)
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (global-set-key "\C-Z" 'revert-buffer)
 
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
