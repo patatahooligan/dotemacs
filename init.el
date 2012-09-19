@@ -165,7 +165,7 @@
 (mouse-avoidance-mode 'banish)
 (tool-bar-mode -1)	; no tool bar with icons
 (scroll-bar-mode -1)	; no scroll bars
-
+(setq-default show-trailing-whitespace t)
 (global-linum-mode 1)	; add line numbers on the left
 
 ;; CLIPBOARD
