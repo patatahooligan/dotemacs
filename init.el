@@ -244,6 +244,7 @@
 (toggle-input-method)
 (setq scroll-step 1)
 (global-set-key "\C-Z" 'revert-buffer)
+(add-hook 'term-mode-hook (lambda() (yas-minor-mode -1))) ;; fix tabcompletion
 
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
@@ -346,7 +347,6 @@
 
 (erc-track-mode t)
 (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
-
 				"324" "329" "332" "333" "353" "477"))
 ;; don't show any of this
 (setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
@@ -364,11 +364,9 @@
   "Connect to ERC, or switch to last active buffer"
   (interactive)
   (if (get-buffer "irc.freenode.net:6667") ;; ERC already active?
-
       (erc-track-switch-buffer 1) ;; yes: switch to last active
     (when (y-or-n-p "Start ERC? ") ;; no: maybe start ERC
-      (erc :server "irc.freenode.net" :port 6667 :nick my-freenode-nick :full-name my-freenode-fullname :password my-freenode-password)
-      )))
+      (erc :server "irc.freenode.net" :port 6667 :nick my-freenode-nick :full-name my-freenode-fullname :password my-freenode-password))))
 
 (defun my-destroy-erc ()
   "Kill all erc buffers!!"
