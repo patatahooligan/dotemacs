@@ -427,3 +427,11 @@
 
 (global-set-key (kbd "M-+")      '(lambda nil (interactive) (djcb-zoom 1)))
 (global-set-key (kbd "M--")      '(lambda nil (interactive) (djcb-zoom -1)))
+
+;; PATH in emacs
+(defun set-exec-path-from-shell-PATH ()
+  (let ((path-from-shell (car (reverse (split-string (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(if window-system (set-exec-path-from-shell-PATH))
