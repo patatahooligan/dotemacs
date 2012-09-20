@@ -3,4 +3,6 @@
  my-freenode-fullname "Chodey McNumnuts"
  my-freenode-password nil
 
- my-orgmode-agenda-files '())
+ my-orgmode-dir "~/.orgmode/"
+ my-notes-file "notes.org"
+ my-orgmode-agenda-dir (concat (expand-file-name my-orgmode-dir) "agenda/"))

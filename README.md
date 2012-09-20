@@ -10,10 +10,14 @@ This is just my dot emacs. You are free to use it. It is based on el-get. I know
 * `C-c e k`: kill all ERC buffers
 * `M-+`: larger fonts
 * `M--`: smaller fonts
+* `C-c c`: orgmode-capture. Jot in notes you thought of just now quickly
+* `C-c a`: open orgmode agenda
 
 ## What you need to change ##
 
 Some of the things in dotemacs files are personal so I will be gathering them into a file called personal.el. There will be a dummy fallback but if you serously consider using this emacs configuration i suggest you use the dummy-personal.el as a template to fill in your own preferences.
+
+Also to use orgmode you need to setup in personal.el the agenda and orgmode folders. They help A LOT. As GTD suggest try to have *nothing* on your mind and als have *nothing* on your agenda todo. This feature needs a bit  more configuration to reach it's maximum efficincy but I am working on it.
 
 ## Features ##
 
