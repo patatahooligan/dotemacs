@@ -184,29 +184,12 @@
 		       (if (frame-parameter nil 'fullscreen) nil 'fullboth)))
 (global-set-key [f11] 'fullscreen)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("53eaee0aec77bc6c21c55cff042ac486adfe395c99e3dc0a59134d1dc09228ee" "22ee8a5d6de86d5181f40e411c354ddde1f84ff246ad8a3cc8fa050282738d80" "fca8ce385e5424064320d2790297f735ecfde494674193b061b9ac371526d059" "a2187840d0077aad2a626aea943edcf1c8733b0d68c77e4ad7130cb425a25af9" "159bb8f86836ea30261ece64ac695dc490e871d57107016c09f286146f0dae64" "4aafea32abe07a9658d20aadcae066e9c7a53f8e3dfbd18d8fa0b26c24f9082c" "8281168b824a806489ca7d22e60bb15020bf6eecd64c25088c85b3fd806fc341" "d6a00ef5e53adf9b6fe417d2b4404895f26210c52bb8716971be106550cea257" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
- '(ido-ubiquitous-mode t)
- '(safe-local-variable-values (quote ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t))))
- '(uniquify-after-kill-buffer-p t)
- '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; Ido mode
 (require 'ido)
 (require 'ido-speed-hack)
 (require 'ido-better-flex)
 (require 'ido-ubiquitous)
-(ido-mode nil)
+(ido-mode t)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
@@ -338,11 +321,11 @@
 
 ;; UNDO TREE
 (require 'undo-tree)
-(global-undo-tree-mode)
+(global-undo-tree-mode t)
 
 ;; RECENT FILES
 (require 'recentf)
-(recentf-mode)
+(recentf-mode t)
 (setq recentf-max-saved-items 100)
 (defun steve-ido-choose-from-recentf ()
   "Use ido to select a recently opened file from the `recentf-list'"
