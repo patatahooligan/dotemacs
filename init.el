@@ -2,7 +2,7 @@
 
 ;; EL-GET
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(add-to-list 'exec-path "~/bin/")
+(add-to-list 'load-path "~/.emacs.d/")
 
 
 ;; Ensure that personal.el exists
@@ -25,7 +25,7 @@
 (setq my:el-get-packages
       '(
 	;; Python
-	ipython
+	;; ipython
 	python-mode
 	python-pep8
 	pylookup
@@ -310,10 +310,11 @@
 
 ;; Python
 (setq py-mode-map python-mode-map)
-(setq ipython-command "/usr/bin/ipython2")
-(setq ipython-completion-command-string "print(';'.join(__IP.Completer.all_completions('%s')))\n")
+;; (setq ipython-command "/usr/bin/ipython2")
+;; (setq ipython-completion-command-string "print ';'.join(__IP.Completer.all_completions('%s'))\n")
+;; (require 'ipython2)
+
 (require 'python-mode)
-(require 'ipython)
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
 
@@ -436,3 +437,70 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (if window-system (set-exec-path-from-shell-PATH))
+
+;; CC-MODE
+(defun gtags-generate-gtags ()
+  "Generate a gtags file in the querried directory"
+  (let ((cmd (format "cd %s ; gtags" (read-directory-name "Root of the project: "))))
+    (message (format "Generating gtags files: %s" cmd))
+    (shell-command cmd)))
+
+(defun gtags-update-gtags ()
+  "Update the gtags files"
+  (let ((gen-cmd "global -u"))
+    (message (format "Updating gatgs files: %s" gen-cmd))
+    (shell-command gen-cmd)))
+
+(defun gtags-generate-or-update ()
+  "If you can update the gtags files. If not generate them."
+  (interactive)
+  (if (null (gtags-get-rootpath))
+      (gtags-generate-gtags)
+    (gtags-update-gtags)))
+
+(when (file-readable-p "/usr/share/gtags/gtags.el")
+  (load-file "/usr/share/gtags/gtags.el")
+  (add-hook 'c-mode-hook
+	    (lambda ()
+	      ;; If gtags are not setup, set them up before finding tag
+	      (define-key c-mode-base-map "\M-." (lambda ()
+						   (when (null (gtags-get-rootpath)) (gtags-generate-gtags))
+						   (gtags-find-tag)))
+	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
+	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag))
+
+
+;; ERC scribbly scribble
+(defun channel-names (channel)
+  "Get a list of niknames for a particular channel."
+  (when (erc-channel-p channel)
+    (with-current-buffer channel
+      (erc-get-channel-nickname-list))))
+
+
+(defun intersect-lists (head &rest lists)
+  "Intersect any number of lists."
+  (if (consp lists)
+      (let ((operand (car lists))
+	    (rest (cdr lists)))
+	(apply 'intersect-lists (intersection head operand) rest))
+    head))
+
+(defun erc-intersect-channels (head &rest channels)
+  "Get a list of the nicknames that are on all channels"
+  (apply 'intersect-lists (channel-names head) (mapcar 'channel-names channels)))
+
+(defun erc-common-nicks ()
+  "Interactively get the names of the common nicknames of two
+channels in a tmp buffer."
+  (interactive)
+  (let*
+      ((c1 (completing-read "First channel: "
+			    (mapcar 'buffer-name (erc-channel-list nil))))
+       (c2 (completing-read "Second channel: "
+			    (delete c1 (mapcar 'buffer-name (erc-channel-list nil))))))
+    (with-output-to-temp-buffer
+	(format "*Erc users itersect:%s|%s*" (delete ?# c1) (delete ?# c2))
+      (mapcar (lambda (c) (princ (format "%s\n" c)))
+		(erc-intersect-channels c1 c2)))))
