@@ -68,6 +68,11 @@
    git-emacs
    visual-basic-mode
 
+   (:name etags-table
+	  :description "Etags is smart enough to look for a table in fs."
+	  :type github
+	  :pkgname "fakedrake/etags-table")
+
    (:name obsidian-theme
 	  :description "My theme"
 	  :type github
@@ -318,25 +323,6 @@
 (define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
 
-
-;; desktop
-(require 'desktop)
-(desktop-save-mode t)
-(setq desktop-buffers-not-to-save
-      (concat "\\("
-	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-	      "\\)$"))
-(add-to-list 'desktop-modes-not-to-save 'dired-mode)
-(add-to-list 'desktop-modes-not-to-save 'Info-mode)
-(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-(add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
-
-(setq history-length 250)
-(add-to-list 'desktop-globals-to-save 'file-name-history)
-(setq make-backup-files nil)
-
-
 ;; UNDO TREE
 (require 'undo-tree)
 (global-undo-tree-mode)
@@ -403,7 +389,8 @@
 
 ;; ETAGS
 (require 'etags-table)
-(setq etags-table-search-up-depth 10)
+(setq etags-table-search-up-depth 10
+      etags-table-generate-tags t)
 (add-to-list 'ido-ubiquitous-command-exceptions 'find-tag)
 
 ;; Expand region
@@ -419,7 +406,7 @@
 
 (put 'narrow-to-region 'disabled nil)
 
-
+;; Zoom
 (defun djcb-zoom (n)
   "with positive N, increase the font size, otherwise decrease it"
   (set-face-attribute 'default (selected-frame) :height
@@ -441,9 +428,11 @@
 ;; CC-MODE
 (defun gtags-generate-gtags ()
   "Generate a gtags file in the querried directory"
-  (let ((cmd (format "cd %s ; gtags" (read-directory-name "Root of the project: "))))
-    (message (format "Generating gtags files: %s" cmd))
-    (shell-command cmd)))
+  (let* ((proj-root (read-directory-name "Root of the project: "))
+	 (cmd (format "cd %s ; gtags" (expand-file-name proj-root))))
+    (when (not (string= "" proj-root))
+      (message (format "Generating gtags files: %s" cmd))
+      (shell-command cmd))))
 
 (defun gtags-update-gtags ()
   "Update the gtags files"
@@ -468,7 +457,7 @@
 						   (gtags-find-tag)))
 	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
 	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
-(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag))
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
 
 
 ;; ERC scribbly scribble
@@ -503,4 +492,25 @@ channels in a tmp buffer."
     (with-output-to-temp-buffer
 	(format "*Erc users itersect:%s|%s*" (delete ?# c1) (delete ?# c2))
       (mapcar (lambda (c) (princ (format "%s\n" c)))
-		(erc-intersect-channels c1 c2)))))
+	      (erc-intersect-channels c1 c2)))))
+
+;; Elisp
+(define-key emacs-lisp-mode-map "\C-c\C-e" 'eval-buffer)
+
+
+;; Desktop
+(require 'desktop)
+(desktop-save-mode t)
+(setq desktop-buffers-not-to-save
+      (concat "\\("
+	      "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+	      "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+	      "\\)$"))
+(add-to-list 'desktop-modes-not-to-save 'dired-mode)
+(add-to-list 'desktop-modes-not-to-save 'Info-mode)
+(add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+(add-to-list 'desktop-modes-not-to-save 'fundamental-mode)
+
+(setq history-length 250)
+(add-to-list 'desktop-globals-to-save 'file-name-history)
+(setq make-backup-files nil)
