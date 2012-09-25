@@ -485,6 +485,9 @@ channels in a tmp buffer."
       (mapcar (lambda (c) (princ (format "%s\n" c)))
 	      (erc-intersect-channels c1 c2)))))
 
+(add-hook 'erc-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
+(add-hook 'term-mode-hook '(lambda() (set (make-local-variable 'global-hl-line-mode) nil)))
+
 ;; Elisp
 (define-key emacs-lisp-mode-map "\C-c\C-e" 'eval-buffer)
 
