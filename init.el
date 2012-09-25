@@ -7,7 +7,7 @@
 ;; This is up here so we can define templates in personal.el
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
-             "* TODO %?\n  %i\n  %a")))
+	 "* TODO %?\n  %i\n  %a")))
 
 ;; Ensure that personal.el exists
 (cond ((not (file-readable-p "~/.emacs.d/personal.el"))
@@ -204,7 +204,7 @@
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
-(ido-everywhere t)
+;; (ido-everywhere t)
 ;; This is mainly for just swapped letters. It sometimes doesnt catch
 ;; entire words
 (ido-better-flex/enable)
@@ -436,6 +436,14 @@
       (gtags-generate-gtags)
     (gtags-update-gtags)))
 
+
+(defun gtags-wrap-find-tag ()
+  "Just a simple wrapper for gtags-find-tag. This is needed for ubiquitous exceptions"
+  (interactive)
+  (when (null (gtags-get-rootpath))
+    (gtags-generate-gtags))
+  (gtags-find-tag))
+
 ;; if your etags file is in some other location please add that location here
 (setq gtags-elisp-file (find-if 'file-exists-p '("/usr/share/gtags/gtags.el"
 						 "/usr/share/emacs/site-lisp/global/gtags.el")))
@@ -444,12 +452,12 @@
   (add-hook 'c-mode-hook
 	    (lambda ()
 	      ;; If gtags are not setup, set them up before finding tag
-	      (define-key c-mode-base-map "\M-." (lambda () (interactive)
-						   (when (null (gtags-get-rootpath)) (gtags-generate-gtags))
-						   (gtags-find-tag)))
+	      (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
 	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
 	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
-(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag) ;; gtags works with ido but it is a bit slow...
+
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
+
 
 ;; ERC scribbly scribble
 (defun channel-names (channel)
