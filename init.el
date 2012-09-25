@@ -4,6 +4,10 @@
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (add-to-list 'load-path "~/.emacs.d/")
 
+;; This is up here so we can define templates in personal.el
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+             "* TODO %?\n  %i\n  %a")))
 
 ;; Ensure that personal.el exists
 (cond ((not (file-readable-p "~/.emacs.d/personal.el"))
@@ -47,6 +51,7 @@
 	smex
 
 	;; Misc
+	org-mode
 	markdown-mode
 	expand-region
 	etags-table
@@ -264,11 +269,11 @@
 ;; (require 'auto-complete-etags)
 ;; (require 'ac-python)
 ;; (require 'auto-complete-emacs-lisp)
-(set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
+(ac-config-default)
 (add-to-list 'ac-dictionary-directories (expand-file-name "dictionaries"))
 (add-to-list 'ac-modes '(org-mode))
 (setq ac-use-fuzzy t)
-(ac-config-default)
+(set-default 'ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-filename ac-source-words-in-same-mode-buffers))
 
 ;; ORG mode
 (require 'org)
@@ -278,10 +283,6 @@
 (add-hook 'org-mode-hook
           '(lambda ()
              (define-key org-mode-map [(tab)] nil)))
-
- (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
-             "* TODO %?\n  %i\n  %a")))
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-agenda-dir)
@@ -435,18 +436,20 @@
       (gtags-generate-gtags)
     (gtags-update-gtags)))
 
-(when (file-readable-p "/usr/share/gtags/gtags.el")
-  (load-file "/usr/share/gtags/gtags.el")
+;; if your etags file is in some other location please add that location here
+(setq gtags-elisp-file (find-if 'file-exists-p '("/usr/share/gtags/gtags.el"
+						 "/usr/share/emacs/site-lisp/global/gtags.el")))
+(when gtags-elisp-file
+  (load-file gtags-elisp-file)
   (add-hook 'c-mode-hook
 	    (lambda ()
 	      ;; If gtags are not setup, set them up before finding tag
-	      (define-key c-mode-base-map "\M-." (lambda ()
+	      (define-key c-mode-base-map "\M-." (lambda () (interactive)
 						   (when (null (gtags-get-rootpath)) (gtags-generate-gtags))
 						   (gtags-find-tag)))
 	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
 	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
-(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
-
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag) ;; gtags works with ido but it is a bit slow...
 
 ;; ERC scribbly scribble
 (defun channel-names (channel)
