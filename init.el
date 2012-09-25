@@ -271,13 +271,17 @@
 (ac-config-default)
 
 ;; ORG mode
+(require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
              (define-key org-mode-map "\M-j" 'org-meta-return)))
 (add-hook 'org-mode-hook
           '(lambda ()
              (define-key org-mode-map [(tab)] nil)))
-(require 'org)
+
+ (setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+             "* TODO %?\n  %i\n  %a")))
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-agenda-dir)
