@@ -195,6 +195,7 @@
 (require 'ido-better-flex)
 (require 'ido-ubiquitous)
 (ido-mode t)
+(ido-ubiquitous-mode t)
 (setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
 (setq ido-enable-flex-matching t)
 (setq ido-auto-merge-work-directories-length -1)
