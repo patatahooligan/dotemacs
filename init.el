@@ -516,3 +516,7 @@ channels in a tmp buffer."
 (setq history-length 250)
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq make-backup-files nil)
+
+;; CC-MODE
+(define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
+(define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
