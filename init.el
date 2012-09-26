@@ -521,7 +521,11 @@ channels in a tmp buffer."
 (global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
-(define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
-(define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
-(define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
-(define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
+(defun fakedrake-cc-mode-init ()
+  "Just some initializations I need for C"
+  (define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
+  (define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
+  (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
+  (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
+  (setq c-default-style "linux" c-basic-offset 4))
+(add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
