@@ -281,7 +281,7 @@
           '(lambda ()
              (define-key org-mode-map "\M-j" 'org-meta-return)))
 (add-hook 'org-mode-hook
-          '(lambda ()
+          #'(lambda ()
              (define-key org-mode-map [(tab)] nil)))
 
 ;; Set up org-mode capture system
@@ -309,8 +309,9 @@
 ;; (require 'ipython2)
 
 (require 'python-mode)
-(define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(define-key python-mode-map "\C-cp" #'(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
+(define-key python-mode-map "\C-x\\" #'(lambda nil (interactive) (message "Warning indenting WILL destroy the file structure. Remember to find a way around this at some point")))
 
 ;; UNDO TREE
 (require 'undo-tree)
@@ -402,8 +403,8 @@
 		      (+ (face-attribute 'default :height) (* (if (> n 0) 1 -1) 10)))
   (message (format "Font size: %d" (face-attribute 'default :height))))
 
-(global-set-key (kbd "M-+")      '(lambda nil (interactive) (djcb-zoom 1)))
-(global-set-key (kbd "M--")      '(lambda nil (interactive) (djcb-zoom -1)))
+(global-set-key (kbd "M-+")      #'(lambda nil (interactive) (djcb-zoom 1)))
+(global-set-key (kbd "M--")      #'(lambda nil (interactive) (djcb-zoom -1)))
 
 ;; PATH in emacs
 (defun set-exec-path-from-shell-PATH ()
@@ -450,7 +451,7 @@
 (when gtags-elisp-file
   (load-file gtags-elisp-file)
   (add-hook 'c-mode-hook
-	    (lambda ()
+	    '(lambda ()
 	      ;; If gtags are not setup, set them up before finding tag
 	      (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
 	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
@@ -520,3 +521,5 @@ channels in a tmp buffer."
 ;; CC-MODE
 (define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
 (define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
+(define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
+(define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
