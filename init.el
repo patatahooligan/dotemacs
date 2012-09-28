@@ -182,6 +182,7 @@
 (scroll-bar-mode -1)	; no scroll bars
 (add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
 (global-linum-mode 1)	; add line numbers on the left
+(which-function-mode t)
 
 ;; CLIPBOARD
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value
@@ -443,6 +444,8 @@
   (interactive)
   (when (null (gtags-get-rootpath))
     (gtags-generate-gtags))
+
+  (widen)
   (gtags-find-tag))
 
 ;; if your etags file is in some other location please add that location here
@@ -450,7 +453,7 @@
 						 "/usr/share/emacs/site-lisp/global/gtags.el")))
 (when gtags-elisp-file
   (load-file gtags-elisp-file)
-  (add-hook 'c-mode-hook
+  (add-hook 'c-mode-common-hook
 	    '(lambda ()
 	      ;; If gtags are not setup, set them up before finding tag
 	      (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
