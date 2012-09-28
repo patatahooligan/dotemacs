@@ -531,4 +531,6 @@ channels in a tmp buffer."
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (setq c-default-style "linux" c-basic-offset 4))
+
+(setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
