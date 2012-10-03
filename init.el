@@ -327,9 +327,10 @@
 ;; (require 'ipython2)
 
 (require 'python-mode)
-(define-key python-mode-map "\C-cp" #'(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
-(define-key python-mode-map "\C-x\\" #'py-my-indent-region)
+(define-key python-mode-map "\C-x\\" 'py-my-indent-region)
+;; (define-key python-mode map "\M-q"   'py-fill-paragraph)
 
 ;; UNDO TREE
 (require 'undo-tree)
@@ -410,6 +411,7 @@
 ;; Find file in project
 (require 'find-file-in-project)
 (global-set-key (kbd "C-x f") 'find-file-in-project)
+(global-set-key (kbd "C-x p") 'ffip-open-projects)
 (setq ffip-full-paths t)
 
 (put 'narrow-to-region 'disabled nil)
