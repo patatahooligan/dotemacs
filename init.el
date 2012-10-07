@@ -88,8 +88,7 @@
    (:name find-file-in-project
 	  :description "Find a file in the current project"
 	  :type github
-	  :pkgname "fakedrake/find-file-in-project"
-	  :compile "find-file-in-project.el")
+	  :pkgname "fakedrake/find-file-in-project")
 
    (:name ido-better-flex
 	  :description "Better flex matching for ido"
@@ -155,7 +154,6 @@
 	do (add-to-list 'el-get-sources p)))
 
 (el-get 'sync my:el-get-packages)
-
 
 (require 'gist)
 ;; on to the visual settings
@@ -286,7 +284,7 @@
              (define-key org-mode-map "\M-j" 'org-meta-return)))
 (add-hook 'org-mode-hook
           #'(lambda ()
-             (define-key org-mode-map [(tab)] nil)))
+	      (define-key org-mode-map [(tab)] nil)))
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-agenda-dir)
@@ -331,6 +329,13 @@
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
 (define-key python-mode-map "\C-x\\" 'py-my-indent-region)
 ;; (define-key python-mode map "\M-q"   'py-fill-paragraph)
+
+(defadvice compile (before ad-compile-smart activate)
+  "Advises `compile' so it sets the argument COMINT to t
+if breakpoints are present in `python-mode' files"
+  (when (derived-mode-p major-mode 'python-mode)
+    ;; set COMINT argument to `t'.
+    (ad-set-arg 1 t)))
 
 ;; UNDO TREE
 (require 'undo-tree)
@@ -474,10 +479,10 @@
   (load-file gtags-elisp-file)
   (add-hook 'c-mode-common-hook
 	    '(lambda ()
-	      ;; If gtags are not setup, set them up before finding tag
-	      (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
-	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
-	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
+	       ;; If gtags are not setup, set them up before finding tag
+	       (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
+	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
+	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
 
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
 
