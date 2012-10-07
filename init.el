@@ -88,8 +88,7 @@
    (:name find-file-in-project
 	  :description "Find a file in the current project"
 	  :type github
-	  :pkgname "fakedrake/find-file-in-project"
-	  :compile "find-file-in-project.el")
+	  :pkgname "fakedrake/find-file-in-project")
 
    (:name ido-better-flex
 	  :description "Better flex matching for ido"
@@ -156,7 +155,6 @@
 
 (el-get 'sync my:el-get-packages)
 
-
 (require 'gist)
 ;; on to the visual settings
 (require 'naquadah-theme)
@@ -185,6 +183,7 @@
 (scroll-bar-mode -1)	; no scroll bars
 (add-hook 'find-file-hook (lambda () (setq show-trailing-whitespace t)))
 (global-linum-mode 1)	; add line numbers on the left
+(which-function-mode t)
 
 ;; CLIPBOARD
 (setq interprogram-paste-function 'x-cut-buffer-or-selection-value
@@ -285,7 +284,7 @@
              (define-key org-mode-map "\M-j" 'org-meta-return)))
 (add-hook 'org-mode-hook
           #'(lambda ()
-             (define-key org-mode-map [(tab)] nil)))
+	      (define-key org-mode-map [(tab)] nil)))
 
 ;; Set up org-mode capture system
 (if (and (file-exists-p my-orgmode-agenda-dir)
@@ -339,9 +338,17 @@
   "Run pylookup-update and create the database at `pylookup-db-file'." t)
 
 (require 'python-mode)
-(define-key python-mode-map "\C-cp" #'(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
+(define-key python-mode-map "\C-cp" '(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
-(define-key python-mode-map "\C-x\\" #'py-my-indent-region)
+(define-key python-mode-map "\C-x\\" 'py-my-indent-region)
+;; (define-key python-mode map "\M-q"   'py-fill-paragraph)
+
+(defadvice compile (before ad-compile-smart activate)
+  "Advises `compile' so it sets the argument COMINT to t
+if breakpoints are present in `python-mode' files"
+  (when (derived-mode-p major-mode 'python-mode)
+    ;; set COMINT argument to `t'.
+    (ad-set-arg 1 t)))
 
 ;; UNDO TREE
 (require 'undo-tree)
@@ -422,6 +429,7 @@
 ;; Find file in project
 (require 'find-file-in-project)
 (global-set-key (kbd "C-x f") 'find-file-in-project)
+(global-set-key (kbd "C-x p") 'ffip-open-projects)
 (setq ffip-full-paths t)
 
 (put 'narrow-to-region 'disabled nil)
@@ -473,6 +481,8 @@
   (interactive)
   (when (null (gtags-get-rootpath))
     (gtags-generate-gtags))
+
+  (widen)
   (gtags-find-tag))
 
 ;; if your etags file is in some other location please add that location here
@@ -480,12 +490,12 @@
 						 "/usr/share/emacs/site-lisp/global/gtags.el")))
 (when gtags-elisp-file
   (load-file gtags-elisp-file)
-  (add-hook 'c-mode-hook
+  (add-hook 'c-mode-common-hook
 	    '(lambda ()
-	      ;; If gtags are not setup, set them up before finding tag
-	      (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
-	      (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
-	      (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
+	       ;; If gtags are not setup, set them up before finding tag
+	       (define-key c-mode-base-map "\M-." 'gtags-wrap-find-tag)
+	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
+	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
 
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
 
@@ -558,4 +568,6 @@ channels in a tmp buffer."
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (setq c-default-style "linux" c-basic-offset 4))
+
+(setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
