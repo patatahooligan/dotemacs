@@ -325,6 +325,19 @@
 ;; (setq ipython-completion-command-string "print ';'.join(__IP.Completer.all_completions('%s'))\n")
 ;; (require 'ipython2)
 
+(setq pylookup-dir "~/.emacs.d/el-get/pylookup/")
+(require 'pylookup)
+;; set executable file and db file
+(setq pylookup-program (concat pylookup-dir "/pylookup.py"))
+(setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))
+
+;; to speedup, just load it on demand
+(autoload 'pylookup-lookup "pylookup"
+  "Lookup SEARCH-TERM in the Python HTML indexes." t)
+
+(autoload 'pylookup-update "pylookup"
+  "Run pylookup-update and create the database at `pylookup-db-file'." t)
+
 (require 'python-mode)
 (define-key python-mode-map "\C-cp" #'(lambda () (interactive) (insert "import ipdb; ipdb.set_trace()")))
 (define-key python-mode-map "\C-ch" 'pylookup-lookup)
