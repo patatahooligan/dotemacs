@@ -553,12 +553,22 @@ channels in a tmp buffer."
 (global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
+
+(defun my-cc-newline-and-indent ()
+  "If we are between braces (that were mos probably created by
+  electric-pairs) prepare for writing the body of something"
+  (interactive)
+  (if (and (looking-at "}") (looking-back "{"))
+      (progn (newline-and-indent) (newline-and-indent) (previous-line) (c-indent-line-or-region))
+    (newline-and-indent)))
+
 (defun fakedrake-cc-mode-init ()
   "Just some initializations I need for C"
   (define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
   (define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
+  (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
   (setq c-default-style "linux" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
