@@ -51,6 +51,7 @@
 	smex
 
 	;; Misc
+	hide-region
 	gist
 	org-mode
 	markdown-mode
@@ -155,6 +156,7 @@
 
 (el-get 'sync my:el-get-packages)
 
+(require 'hide-region)
 (require 'gist)
 ;; on to the visual settings
 (require 'naquadah-theme)
@@ -281,7 +283,9 @@
 (require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
-             (define-key org-mode-map "\M-j" 'org-meta-return)))
+             (define-key org-mode-map "\M-j" 'org-meta-return)
+	     (define-key org-mode-map "\M-n" 'org-next-element)
+	     (define-key org-mode-map "\M-p" 'org-previous-element)))
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)))
@@ -484,6 +488,7 @@ if breakpoints are present in `python-mode' files"
 	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
 	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
 
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
 
 
@@ -558,3 +563,4 @@ channels in a tmp buffer."
 
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
+(put 'set-goal-column 'disabled nil)
