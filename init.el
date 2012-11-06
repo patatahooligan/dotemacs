@@ -553,14 +553,16 @@ channels in a tmp buffer."
 (global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
-
 (defun my-cc-newline-and-indent ()
-  "If we are between braces (that were mos probably created by
-  electric-pairs) prepare for writing the body of something"
+  "Append a newline first if the cursor is between { and }."
   (interactive)
-  (if (and (looking-at "}") (looking-back "{"))
-      (progn (newline-and-indent) (newline-and-indent) (previous-line) (c-indent-line-or-region))
-    (newline-and-indent)))
+  (when (and (not (nth 8 (syntax-ppss)))
+             (looking-back "{\s*")
+             (looking-at "\s*}"))
+    (save-excursion
+      (newline)
+      (indent-according-to-mode)))
+  (newline-and-indent))
 
 (defun fakedrake-cc-mode-init ()
   "Just some initializations I need for C"
@@ -574,14 +576,3 @@ channels in a tmp buffer."
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
 (put 'set-goal-column 'disabled nil)
-
-(defun my-cc-newline-and-indent ()
-  "Append a newline first if the cursor is between { and }."
-  (interactive)
-  (when (and (not (nth 8 (syntax-ppss)))
-             (looking-back "{\s*")
-             (looking-at "\s*}"))
-    (save-excursion
-      (newline)
-      (indent-according-to-mode)))
-  (newline-and-indent))
