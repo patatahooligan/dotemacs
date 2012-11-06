@@ -284,8 +284,8 @@
 (add-hook 'org-mode-hook
           '(lambda ()
              (define-key org-mode-map "\M-j" 'org-meta-return)
-	     (define-key org-mode-map "\M-n" 'org-next-element)
-	     (define-key org-mode-map "\M-p" 'org-previous-element)))
+	     (define-key org-mode-map "\M-n" 'org-forward-element)
+	     (define-key org-mode-map "\M-p" 'org-backward-element)))
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)))
