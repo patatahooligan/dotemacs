@@ -574,3 +574,14 @@ channels in a tmp buffer."
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
 (put 'set-goal-column 'disabled nil)
+
+(defun my-cc-newline-and-indent ()
+  "Append a newline first if the cursor is between { and }."
+  (interactive)
+  (when (and (not (nth 8 (syntax-ppss)))
+             (looking-back "{\s*")
+             (looking-at "\s*}"))
+    (save-excursion
+      (newline)
+      (indent-according-to-mode)))
+  (newline-and-indent))
