@@ -74,6 +74,16 @@
    git-emacs
    visual-basic-mode
 
+
+(:name jdee :description "Integrated Development Environment for Java" :type emacsmirror :pkgname "jdee" :required ((("arc-mode" arc-mode) ("avl-tree" avl-tree) ("browse-url" browse-url) ("cc-mode" cc-fonts cc-mode) ("cedet" eieio speedbar) ("cl" cl) ("comint" comint) ("compile" compile) ("custom" cus-edit custom) ("easymenu" easymenu) ("eldoc" eldoc) ("elib" avltree) ("emacs-core" font-lock overlay sort) ("emacs-obsolete" lmenu) ("etags" etags) ("executable" executable) ("flymake" flymake) ("htmlize" htmlize) ("imenu" imenu) ("jdee" jde-autoload) ("regexp-opt" regexp-opt) ("reporter" reporter) ("tempo" tempo) ("thingatpt" thingatpt) ("tree-widget" tree-widget) ("widget" wid-edit widget) (nil semantic/senator))) :depends (elib cedet cc-mode))
+
+
+
+   (:name undo-tree
+	  :description "Visualize undo history as a tree"
+	  :type github
+	  :pkgname "emacsmirror/undo-tree")
+
    (:name etags-table
 	  :description "Etags is smart enough to look for a table in fs."
 	  :type github
@@ -157,24 +167,28 @@
 
 (require 'gist)
 ;; on to the visual settings
-(require 'naquadah-theme)
-(load-theme 'naquadah t)
-(let ((comment "IndianRed2"))
-  (custom-theme-set-faces
-   'naquadah
-   `(mode-line ((t (:height 1.1 :background "gray30"))))
-   `(minibuffer-prompt ((t (:foreground "orange1"))))
-   `(region ((t (:background "gray25"))))
+(if window-system
+      (let ((comment "IndianRed2"))
+	(global-hl-line-mode t)
+	(require 'naquadah-theme)
+	(load-theme 'naquadah t)
+	(custom-theme-set-faces
+	 'naquadah
+	 `(mode-line ((t (:height 1.1 :background "gray30"))))
+	 `(minibuffer-prompt ((t (:foreground "orange1"))))
+	 `(region ((t (:background "gray25"))))
 
-   ;; Development
-   `(font-lock-comment-face ((t (:foreground ,comment))))
-   `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
-   `(font-lock-doc-face ((t (:foreground ,comment))))
-   `(font-lock-doc-string-face ((t (:foreground ,comment))))
-   `(link ((t (:foreground  "#729fcf" :underline t))))
 
-   ;; ERC
-   `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10"))))))
+
+	 ;; Development
+	 `(font-lock-comment-face ((t (:foreground ,comment))))
+	 `(font-lock-function-name-face ((t (:foreground "orange1" :bold t))))
+	 `(font-lock-doc-face ((t (:foreground ,comment))))
+	 `(font-lock-doc-string-face ((t (:foreground ,comment))))
+	 `(link ((t (:foreground  "#729fcf" :underline t))))
+
+	 ;; ERC
+	 `(erc-prompt-face ((t (:background "#f57900" :bold t :foreground "gray10")))))))
 
 (line-number-mode 1)	; have line numbers and
 (column-number-mode 1)	; column numbers in the mode line
@@ -231,7 +245,6 @@
 (delete-selection-mode t)
 (show-paren-mode t)
 (electric-pair-mode t)
-(global-hl-line-mode t)
 (set-face-attribute 'default nil :height 90)
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup/")))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -571,3 +584,57 @@ channels in a tmp buffer."
 
 (setq compilation-scroll-output t)
 (add-hook 'c-mode-common-hook 'fakedrake-cc-mode-init)
+
+;; Prolog
+(add-to-list 'auto-mode-alist '("*.pl$" . prolog-mode))
+(setq prolog-system 'gnu)
+
+(defadvice gist-region (around su/advice/gist/gist-region/around/dirty-hack
+                               a c pre)
+  "Dirty hack to prevent gist-region from choking on buffers which contain
+`%' character"
+  (save-window-excursion
+    (let* ((delete-old-versions t)
+           (dummy "foo")
+           (beg (ad-get-arg 0))
+           (end (ad-get-arg 1))
+           (min-beg-end (min beg end))
+           (original-text (buffer-substring beg end))
+           gistid buf proc)
+      (kill-region beg end)
+      (insert-for-yank-1 dummy)
+      (ad-set-arg 0 min-beg-end)
+      (ad-set-arg 1 (point))
+      ad-do-it
+      (sleep-for 0.5) ;; deep magic
+      (dolist (buf (buffer-list))
+        (when (string-match "^\\s-\\*http api\\.github\\.com:443\\*$" (buffer-name
+                                                                       buf))
+          (setq proc (get-buffer-process buf))
+          (when proc (kill-process proc))
+          ))
+      (delete-region min-beg-end (point))
+      (insert-for-yank-1 original-text)
+      (setq gistid (car (last (split-string (car kill-ring)
+                                            "/"))))
+      (setq buf (gist-fetch gistid))
+      (with-current-buffer buf
+        (delete-region (point-min)
+                       (point-max))
+        (insert-for-yank-1 original-text)
+        (gist-mode-save-buffer)
+        (kill-buffer))
+
+      )))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values (quote ((eval ignore-errors "Write-contents-functions is a buffer-local alternative to before-save-hook" (add-hook (quote write-contents-functions) (lambda nil (delete-trailing-whitespace) nil)) (require (quote whitespace)) "Sometimes the mode needs to be toggled off and on." (whitespace-mode 0) (whitespace-mode 1)) (whitespace-line-column . 80) (whitespace-style face trailing lines-tail) (require-final-newline . t)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
