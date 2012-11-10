@@ -51,6 +51,7 @@
 	smex
 
 	;; Misc
+	hide-region
 	gist
 	org-mode
 	markdown-mode
@@ -165,6 +166,7 @@
 
 (el-get 'sync my:el-get-packages)
 
+(require 'hide-region)
 (require 'gist)
 ;; on to the visual settings
 (if window-system
@@ -294,7 +296,9 @@
 (require 'org)
 (add-hook 'org-mode-hook
           '(lambda ()
-             (define-key org-mode-map "\M-j" 'org-meta-return)))
+             (define-key org-mode-map "\M-j" 'org-meta-return)
+	     (define-key org-mode-map "\M-n" 'org-forward-element)
+	     (define-key org-mode-map "\M-p" 'org-backward-element)))
 (add-hook 'org-mode-hook
           #'(lambda ()
 	      (define-key org-mode-map [(tab)] nil)))
@@ -510,6 +514,7 @@ if breakpoints are present in `python-mode' files"
 	       (define-key c-mode-base-map "\M-*" 'gtags-pop-stack)
 	       (define-key c-mode-base-map "\C-ct" 'gtags-generate-or-update))))
 
+(add-to-list 'ido-ubiquitous-command-exceptions 'gtags-find-tag)
 (add-to-list 'ido-ubiquitous-command-exceptions 'gtags-wrap-find-tag)
 
 
@@ -574,12 +579,22 @@ channels in a tmp buffer."
 (global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
+
+(defun my-cc-newline-and-indent ()
+  "If we are between braces (that were mos probably created by
+  electric-pairs) prepare for writing the body of something"
+  (interactive)
+  (if (and (looking-at "}") (looking-back "{"))
+      (progn (newline-and-indent) (newline-and-indent) (previous-line) (c-indent-line-or-region))
+    (newline-and-indent)))
+
 (defun fakedrake-cc-mode-init ()
   "Just some initializations I need for C"
   (define-key c-mode-base-map (kbd "C-M-n") 'c-end-of-defun)
   (define-key c-mode-base-map (kbd "C-M-p") 'c-beginning-of-defun)
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
+  (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
   (setq c-default-style "linux" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
@@ -638,3 +653,16 @@ channels in a tmp buffer."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(put 'set-goal-column 'disabled nil)
+
+(defun my-cc-newline-and-indent ()
+  "Append a newline first if the cursor is between { and }."
+  (interactive)
+  (when (and (not (nth 8 (syntax-ppss)))
+             (looking-back "{\s*")
+             (looking-at "\s*}"))
+    (save-excursion
+      (newline)
+      (indent-according-to-mode)))
+  (newline-and-indent))
