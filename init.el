@@ -398,7 +398,8 @@ if breakpoints are present in `python-mode' files"
 (erc-autojoin-mode t)
 (setq erc-autojoin-channels-alist
       '((".*\\.freenode.net" "#emacs")
-	(".*\\.freenode.net" "#archlinux")))
+	(".*\\.freenode.net" "#ngep")
+	(".*\\.freenode.net" "#plone")))
 
 (defun fakedrake-erc-start-or-switch ()
   "Connect to ERC, or switch to last active buffer"
@@ -597,6 +598,7 @@ channels in a tmp buffer."
   (define-key c-mode-base-map (kbd "M-n") 'c-end-of-statement)
   (define-key c-mode-base-map (kbd "M-p") 'c-beginning-of-statement)
   (define-key c-mode-base-map (kbd "C-j") 'my-cc-newline-and-indent)
+  (define-key c-mode-base-map (kbd "C-c r") 'recompile)
   (setq c-default-style "linux" c-basic-offset 4))
 
 (setq compilation-scroll-output t)
