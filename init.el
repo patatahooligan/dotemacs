@@ -232,6 +232,7 @@
 
 ;; Basic stuff
 (require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
 
 (setq-default
  frame-title-format
@@ -259,6 +260,7 @@
 
 (add-to-list 'auto-mode-alist '("[.]zcml" . nxml-mode))
 (add-to-list 'auto-mode-alist '("[.]pt" . html-mode))
+(add-to-list 'auto-mode-alist '("[.]sim" . asm-mode))
 
 ;; Indent buffer
 (defun indent-buffer ()
@@ -503,6 +505,11 @@ if breakpoints are present in `python-mode' files"
   (widen)
   (gtags-find-tag))
 
+;; (defadvice gtags-goto-tag (around ad-fuse-imenu-gtags (tagname passer) activate)
+;;   (message (concat "Trying imenu for " tagname))
+;;   (when (null (imenu tagname))
+;;     ad-do-it))
+
 ;; if your etags file is in some other location please add that location here
 (setq gtags-elisp-file (find-if 'file-exists-p '("/usr/share/gtags/gtags.el"
 						 "/usr/share/emacs/site-lisp/global/gtags.el")))
@@ -577,7 +584,7 @@ channels in a tmp buffer."
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq make-backup-files nil)
 
-(global-set-key "\C-cdc" (lambda nil (interactive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
+(global-set-key "\C-cdc" (lambda nil (iunteractive) (when (y-or-n-p "Really kill all buffers?") (desktop-clear))))
 
 ;; CC-MODE
 (defun my-cc-newline-and-indent ()
@@ -674,3 +681,5 @@ channels in a tmp buffer."
       (message (format "Copied '%s'" filename)))))
 
 (global-set-key (kbd "C-x y") 'my-put-file-name-on-clipboard)
+
+(setq ediff-split-window-function 'split-window-horizontally)
