@@ -51,6 +51,7 @@
 	smex
 
 	;; Misc
+	c-eldoc
 	dired-sort
 	hide-region
 	gist
