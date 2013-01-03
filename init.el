@@ -51,6 +51,7 @@
 	smex
 
 	;; Misc
+	vimperator-mode
 	c-eldoc
 	dired-sort
 	hide-region
@@ -77,10 +78,12 @@
    git-emacs
    visual-basic-mode
 
-
    (:name jdee :description "Integrated Development Environment for Java" :type emacsmirror :pkgname "jdee" :required ((("arc-mode" arc-mode) ("avl-tree" avl-tree) ("browse-url" browse-url) ("cc-mode" cc-fonts cc-mode) ("cedet" eieio speedbar) ("cl" cl) ("comint" comint) ("compile" compile) ("custom" cus-edit custom) ("easymenu" easymenu) ("eldoc" eldoc) ("elib" avltree) ("emacs-core" font-lock overlay sort) ("emacs-obsolete" lmenu) ("etags" etags) ("executable" executable) ("flymake" flymake) ("htmlize" htmlize) ("imenu" imenu) ("jdee" jde-autoload) ("regexp-opt" regexp-opt) ("reporter" reporter) ("tempo" tempo) ("thingatpt" thingatpt) ("tree-widget" tree-widget) ("widget" wid-edit widget) (nil semantic/senator))) :depends (elib cedet cc-mode))
 
-
+   (:name vimperator-mode
+	  :description "Edit vimperator files"
+	  :type github
+	  :pkgname "xcezx/vimperator-mode")
 
    (:name undo-tree
 	  :description "Visualize undo history as a tree"
@@ -698,3 +701,5 @@ channels in a tmp buffer."
 (require 'c-eldoc)
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 (add-to-list 'ido-ignore-buffers ".*-preprocessed\*")
+(require 'vimperator-mode)
+(add-to-list 'auto-mode-alist '(".*.vimperatorrc$" . vimperator-mode))
