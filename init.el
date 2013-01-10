@@ -699,4 +699,4 @@ channels in a tmp buffer."
 (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 (add-to-list 'ido-ignore-buffers ".*-preprocessed\*")
 
-(global-set-key "\C-L" (lambda () (interactive) (set-window-hscroll (selected-window) 0)))
+(global-set-key [?\C-;] (lambda () (interactive) (set-window-hscroll (selected-window) 0)))
