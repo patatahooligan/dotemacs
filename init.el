@@ -51,6 +51,7 @@
 	smex
 
 	;; Misc
+	vimperator-mode
 	c-eldoc
 	dired-sort
 	hide-region
@@ -77,10 +78,12 @@
    git-emacs
    visual-basic-mode
 
-
    (:name jdee :description "Integrated Development Environment for Java" :type emacsmirror :pkgname "jdee" :required ((("arc-mode" arc-mode) ("avl-tree" avl-tree) ("browse-url" browse-url) ("cc-mode" cc-fonts cc-mode) ("cedet" eieio speedbar) ("cl" cl) ("comint" comint) ("compile" compile) ("custom" cus-edit custom) ("easymenu" easymenu) ("eldoc" eldoc) ("elib" avltree) ("emacs-core" font-lock overlay sort) ("emacs-obsolete" lmenu) ("etags" etags) ("executable" executable) ("flymake" flymake) ("htmlize" htmlize) ("imenu" imenu) ("jdee" jde-autoload) ("regexp-opt" regexp-opt) ("reporter" reporter) ("tempo" tempo) ("thingatpt" thingatpt) ("tree-widget" tree-widget) ("widget" wid-edit widget) (nil semantic/senator))) :depends (elib cedet cc-mode))
 
-
+   (:name vimperator-mode
+	  :description "Edit vimperator files"
+	  :type github
+	  :pkgname "xcezx/vimperator-mode")
 
    (:name undo-tree
 	  :description "Visualize undo history as a tree"
@@ -425,9 +428,7 @@ if breakpoints are present in `python-mode' files"
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
 (global-set-key (kbd "C-c e k") 'my-destroy-erc)
 
-
 (require 'lisppaste)
-
 
 ;; BOOKMARKS
 (require 'bm)
@@ -504,7 +505,6 @@ ubiquitous exceptions, but it also tries to use imenu before
 actually trying to use gtags. This way if we have a single file
 project we do not need gtags to jump around. Also we dont need to
 regenerate gtags for local symbols."
-
   (interactive)
   (let* ((current-token (gtags-current-token))
 	 (imenu-tokens (mapcar 'car (imenu--make-index-alist)))
@@ -700,3 +700,6 @@ channels in a tmp buffer."
 (add-to-list 'ido-ignore-buffers ".*-preprocessed\*")
 
 (global-set-key [?\C-;] (lambda () (interactive) (set-window-hscroll (selected-window) 0)))
+
+(require 'vimperator-mode)
+(add-to-list 'auto-mode-alist '(".*.vimperatorrc$" . vimperator-mode))
