@@ -428,9 +428,7 @@ if breakpoints are present in `python-mode' files"
 (global-set-key (kbd "C-c e s") 'fakedrake-erc-start-or-switch) ;; ERC
 (global-set-key (kbd "C-c e k") 'my-destroy-erc)
 
-
 (require 'lisppaste)
-
 
 ;; BOOKMARKS
 (require 'bm)
@@ -507,7 +505,6 @@ ubiquitous exceptions, but it also tries to use imenu before
 actually trying to use gtags. This way if we have a single file
 project we do not need gtags to jump around. Also we dont need to
 regenerate gtags for local symbols."
-
   (interactive)
   (let* ((current-token (gtags-current-token))
 	 (imenu-tokens (mapcar 'car (imenu--make-index-alist)))
